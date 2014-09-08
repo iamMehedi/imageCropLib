@@ -11,7 +11,8 @@
         >
         
         <activity
-            android:name="com.mhk.android.croplib.demo.CropTest">
+            android:name="com.mhk.android.croplib.demo.CropTest"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

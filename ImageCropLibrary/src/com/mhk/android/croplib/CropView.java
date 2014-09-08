@@ -45,7 +45,7 @@ public class CropView {
         
         drawRect = computeDrawRect();
         
-        outsidePaint.setARGB(125, 50, 50, 50);
+        outsidePaint.setARGB(160, 50, 50, 50);
         outlinePaint.setStyle(Paint.Style.STROKE);
         outlinePaint.setAntiAlias(true);
         outlineWidth = dpToPx(OUTLINE_WIDTH);

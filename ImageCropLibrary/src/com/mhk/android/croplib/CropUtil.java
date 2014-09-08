@@ -37,6 +37,7 @@ import android.net.Uri;
 import android.opengl.GLES10;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 /*
  * Modified from original in AOSP.
@@ -184,6 +185,7 @@ public class CropUtil {
         while (options.outHeight / sampleSize > maxSize || options.outWidth / sampleSize > maxSize) {
             sampleSize = sampleSize << 1;
         }
+        Log.d("SAMPLE", "max:"+maxSize+", sample:"+sampleSize);
         return sampleSize;
     }
     

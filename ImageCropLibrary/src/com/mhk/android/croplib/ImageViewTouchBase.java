@@ -25,6 +25,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 
@@ -237,13 +238,12 @@ abstract class ImageViewTouchBase extends ImageView {
     
     void fixForZoom()
     {
-    	final Bitmap bitmap = bitmapDisplayed.getBitmap();
-        if (bitmap == null) {
+        if (bitmapDisplayed.getBitmap() == null) {
             return;
         }
-        Matrix m = getImageViewMatrix();
+        Matrix m = getUnrotatedMatrix();
 
-        RectF rect = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF rect = new RectF(0, 0, bitmapDisplayed.getWidth(), bitmapDisplayed.getHeight());
         m.mapRect(rect);
 
         float[] mp=new float[9];
@@ -255,6 +255,7 @@ abstract class ImageViewTouchBase extends ImageView {
         float viewHeight=getHeight();
         float viewWidth=getWidth();
         
+        Log.d("FIX", "bitmap: "+bitmapDisplayed.getWidth()+", "+bitmapDisplayed.getHeight()+" rect: "+width+", "+height);
         float deltaX = 0, deltaY = 0;
         
         deltaX = getFixTrans(transX, viewWidth, width);
@@ -355,17 +356,23 @@ abstract class ImageViewTouchBase extends ImageView {
     	
     	if (scale > maxZoom) {
             scale = maxZoom;
-            scaleFactor=maxZoom/oldScale;
         }
     	else if(scale<0.5)
     	{
     		scale=0.5f;
-    		scaleFactor=0.5f/oldScale;
     	}
 
-        //float deltaScale = scale / oldScale;
-
-        //suppMatrix.postScale(deltaScale, deltaScale, centerX, centerY);
+        float newWidth = thisWidth * scale;
+        float newHeight = thisHeight * scale;
+        while(newWidth<=BaseActivity.MIN_SIZE || newHeight<=BaseActivity.MIN_SIZE)
+        {
+        	scale = scale*1.02f;
+        	
+        	newWidth = thisWidth * scale;
+            newHeight = thisHeight * scale;
+        }
+        
+        scaleFactor = scale/oldScale;
     	suppMatrix.postScale(scaleFactor, scaleFactor, centerX, centerY);
         setImageMatrix(getImageViewMatrix());
         //center(true, true);

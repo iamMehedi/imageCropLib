@@ -23,8 +23,10 @@ public class BaseActivity extends Activity implements HostActivityActionListener
 
 	public static final String EXTRA_OUTPUT_PATH="output_file";
 	final int REQUEST_PICK=121;
-	final int CROP_WIDTH = 265, CROP_HEIGHT = 265;
-	final int OUTPUT_WIDTH = 265, OUTPUT_HEIGHT = 265;
+	public final static int CROP_WIDTH = 600, CROP_HEIGHT = 600; //in dp
+	final int OUTPUT_WIDTH = 165, OUTPUT_HEIGHT = 165;
+	
+	public static float MIN_SIZE = CROP_WIDTH;
 	
 	private boolean isSaving;
 	
@@ -138,10 +140,24 @@ public class BaseActivity extends Activity implements HostActivityActionListener
 
              Rect imageRect = new Rect(0, 0, width, height);
              
-             int x = (width - CROP_WIDTH) / 2;
-             int y = (height - CROP_HEIGHT) / 2;
+             float cropWidth = CROP_WIDTH;
+             float cropHeight = CROP_HEIGHT;
+             
+             if(width<cropWidth)
+             {
+            	 cropWidth  = cropHeight = width-20;
+             }
+             else if(height<cropHeight)
+             {
+            	 cropHeight = cropWidth = height - 20;
+             }
+             
+             MIN_SIZE = Math.max(cropWidth, cropHeight);
+             
+             float x = (width - cropWidth) / 2;
+             float y = (height - cropHeight) / 2;
 
-             RectF cropRect = new RectF(x, y, x + CROP_WIDTH, y + CROP_HEIGHT);
+             RectF cropRect = new RectF(x, y, x + cropWidth, y + cropHeight);
              cv.setup(imageView.getUnrotatedMatrix(), imageRect, cropRect);
              imageView.add(cv);
              imageView.invalidate();
@@ -152,6 +168,10 @@ public class BaseActivity extends Activity implements HostActivityActionListener
              }
         }
 	}
+	
+	 private float dpToPx(float dp) {
+	        return dp * imageView.getResources().getDisplayMetrics().density;
+	    }
 	
 	 void clearImageView() 
 	 {
